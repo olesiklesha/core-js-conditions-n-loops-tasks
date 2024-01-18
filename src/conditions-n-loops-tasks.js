@@ -582,9 +582,35 @@ function getNearestBigger(number) {
     arr[j] = temp;
   };
 
+  const mySlice = (array, index, start = null) => {
+    const result = [];
+
+    if (start !== null) {
+      for (let i = start; i < index; i += 1) {
+        result.push(array[i]);
+      }
+    } else {
+      for (let i = index; i < array.length; i += 1) {
+        result.push(array[i]);
+      }
+    }
+
+    return result;
+  };
+
+  const myLastIndexOf = (array, target) => {
+    for (let i = array.length - 1; i > 0; i -= 1) {
+      if (array[i] === target) return i;
+    }
+
+    return -1;
+  };
+
+  const myConcat = (array1, array2) => [...array1, ...array2];
+
   for (let i = arr.length - 1; i > 0; i -= 1) {
     if (arr[i] > arr[i - 1]) {
-      const rest = arr.slice(i);
+      const rest = mySlice(arr, i);
       rest.sort((a, b) => b - a);
 
       const target = arr[i - 1];
@@ -600,17 +626,17 @@ function getNearestBigger(number) {
         j -= 1;
       }
 
-      const secondTargetIndex = arr.lastIndexOf(String(secondTarget));
+      const secondTargetIndex = myLastIndexOf(arr, String(secondTarget));
       swap(i - 1, secondTargetIndex);
 
-      const currRes = +arr
-        .slice(0, i)
-        .concat(arr.slice(i).sort((a, b) => a - b))
-        .join('');
+      const firstPart = mySlice(arr, i, 0);
+      const secondPart = mySlice(arr, i).sort((a, b) => a - b);
+      const currArr = myConcat(firstPart, secondPart);
+      const currentResult = +currArr.join('');
 
-      arr = arr.slice(0, i).concat(arr.slice(i).sort((a, b) => a - b));
+      arr = currArr;
 
-      if (currRes > number) return currRes;
+      if (currentResult > number) return currentResult;
     }
   }
 
